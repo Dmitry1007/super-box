@@ -14,6 +14,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'color_routes'
 
 gem 'foundation-rails'
+gem 'foundation_rails_helper'
 gem 'puma'
 
 group :development, :test do
