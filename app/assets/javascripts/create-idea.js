@@ -3,8 +3,8 @@ function ideaAccordionElement(idea){
 }
 
 function trimIdeaBody(idea){
-  if(idea.body.length > 10){
-    var trimmedBody = idea.body.substr(0, 10);
+  if(idea.body.length > 100){
+    var trimmedBody = idea.body.substr(0, 100)
     //re-trim if we are in the middle of a word
     idea.body = trimmedBody.substr(0, Math.min(trimmedBody.length, trimmedBody.lastIndexOf(" ")))
   }
@@ -13,19 +13,20 @@ function trimIdeaBody(idea){
 $(document).ready(function(){
 
   $('form').submit(function() {
-    var valuesToSubmit = $(this).serialize();
+    var valuesToSubmit = $(this).serialize()
+    this.reset()
     $.ajax({
         type: "POST",
         url: $(this).attr('action'), //sumbits it to the given url of the form
         data: valuesToSubmit,
         dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
     }).success(function(idea){
-      console.log("success", idea);
+      console.log("success", idea)
       trimIdeaBody(idea)
       $('.ideas-list').prepend(ideaAccordionElement(idea))
-      $(document).foundation('accordion', 'reflow');
-    });
-    return false; // prevents normal behaviour
-  });
+      $(document).foundation('accordion', 'reflow')
+    })
+    return false // prevents normal behaviour
+  })
 
 })
