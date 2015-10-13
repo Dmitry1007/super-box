@@ -6,12 +6,6 @@
       <%= f.email_field :title %>
       <%= f.password_field :body %>
 
-      <ul class="button-group round even-3">
-        <li><a href="#" class="button tiny">Swill</a></li>
-        <li><a href="#" class="button tiny">Plausible</a></li>
-        <li><a href="#" class="button tiny">Genius</a></li>
-      </ul>
-
       <%= f.submit "Save" %>
     <% end %>
   </div>
@@ -20,15 +14,27 @@
 <div class="row">
   <div class="medium-9 columns">
    <h4>Ideas</h4>
+
    <% @ideas.each do |idea| %>
      <ul class="accordion" data-accordion>
         <li class="accordion-navigation">
-          <a href="#idea<%= idea.id %>"><%= idea.title %></a>
-            <div id="idea<%= idea.id %>" class="content">
-              <%= idea.body %>
-            </div>
+          <a href="#idea<%= idea.id %>"><%= idea.title %>
+
+          <div class="right">
+            <i class="fa fa-thumbs-o-up"></i>
+            <i class="fa fa-thumbs-o-down"></i>
+            <span class="round radius label"><%= idea.quality %></span>
+          </div>
+
+          </a>
+          <div id="idea<%= idea.id %>" class="content">
+            <%= idea.body %>
+            <span class="alert round radius label">Delete</span>
+            <span class="round radius label">Edit</span>
+          </div>
         </li>
      </ul>
    <% end %>
+
   </div>
 </div>

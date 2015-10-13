@@ -15,6 +15,8 @@ gem 'color_routes'
 
 gem 'foundation-rails'
 gem 'foundation_rails_helper'
+gem "font-awesome-rails"
+
 gem 'puma'
 gem 'responders'
 
