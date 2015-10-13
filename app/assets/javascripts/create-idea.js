@@ -12,6 +12,18 @@ function trimIdeaBody(idea){
 
 $(document).ready(function(){
 
+  $.ajax({
+      type: "GET",
+      url: "api/v1/ideas",
+      dataType: "JSON"
+  }).success(function(ideas){
+    ideas.forEach(function(idea){
+      trimIdeaBody(idea)
+      $('.ideas-list').prepend(ideaAccordionElement(idea))
+    })
+    $(document).foundation('accordion', 'reflow')
+  })
+
   $('form').submit(function() {
     var valuesToSubmit = $(this).serialize()
     this.reset()
