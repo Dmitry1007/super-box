@@ -1,5 +1,5 @@
 function ideaAccordionElement(idea){
-  return "<ul class='accordion' data-accordion><li class='accordion-navigation'><a href=#idea"+idea.id+">"+idea.title+"<div class='right'><i class='fa fa-thumbs-o-up'></i><i class='fa fa-thumbs-o-down'></i><span class='round radius label'>"+idea.quality+"</span></div></a><div id=idea"+idea.id+" class='content'>"+idea.body+"<br><span class='alert round radius label'>Delete</span><span class='round radius label'>Edit</span></div></li></ul>"
+  return "<ul class='accordion' data-accordion><li class='accordion-navigation'><a href=#idea"+idea.id+">"+idea.title+"<div class='right'><i class='fa fa-thumbs-o-up'></i><i class='fa fa-thumbs-o-down'></i><span class='round radius label'>"+idea.quality+"</span></div></a><div id=idea"+idea.id+" class='content'>"+idea.body+"<br><span data-id="+idea.id+" class='alert round radius label delete-label'>Delete</span><span class='round radius label'>Edit</span></div></li></ul>"
 }
 
 function trimIdeaBody(idea){
@@ -10,6 +10,22 @@ function trimIdeaBody(idea){
   }
 }
 
+function addDeleteHandler(idea){
+  idea.on('click', function(){
+    var ideaId        = $(this).data('id')
+    var ideaElement   = this.closest('.accordion')
+
+    $.ajax({
+      type: "DELETE",
+      url: "api/v1/ideas/" + ideaId,
+      dataType: "JSON"
+    }).success(function(){
+      $(ideaElement).slideUp('slow')
+    })
+  })
+}
+
+
 $(document).ready(function(){
 
   $.ajax({
@@ -19,10 +35,14 @@ $(document).ready(function(){
   }).success(function(ideas){
     ideas.forEach(function(idea){
       trimIdeaBody(idea)
-      $('.ideas-list').prepend(ideaAccordionElement(idea))
+      var ideaDomElement = $(ideaAccordionElement(idea));
+      addDeleteHandler(ideaDomElement.find('.delete-label'));
+      $('.ideas-list').append(ideaDomElement)
     })
     $(document).foundation('accordion', 'reflow')
   })
+
+
 
   $('form').submit(function() {
     var valuesToSubmit = $(this).serialize()
@@ -35,7 +55,9 @@ $(document).ready(function(){
     }).success(function(idea){
       console.log("success", idea)
       trimIdeaBody(idea)
-      $('.ideas-list').prepend(ideaAccordionElement(idea))
+      var ideaDomElement = $(ideaAccordionElement(idea));
+      addDeleteHandler(ideaDomElement.find('.delete-label'));
+      $('.ideas-list').prepend(ideaDomElement)
       $(document).foundation('accordion', 'reflow')
     })
     return false // prevents normal behaviour

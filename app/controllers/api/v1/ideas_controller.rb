@@ -2,7 +2,7 @@ class Api::V1::IdeasController < ApplicationController
   respond_to :json
 
   def index
-    respond_with Idea.all.sort_by(&:created_at)
+    respond_with Idea.all.sort_by(&:created_at).reverse
   end
 
   def create
@@ -14,7 +14,7 @@ class Api::V1::IdeasController < ApplicationController
   end
 
   def destroy
-    respond_with Idea.destroy(params[:id])
+    respond_with Idea.destroy(params[:id]), location: nil
   end
 
   private
