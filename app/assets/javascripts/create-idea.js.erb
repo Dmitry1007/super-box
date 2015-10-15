@@ -1,9 +1,5 @@
 function ideaAccordionElement(idea){
-  return "<ul class='accordion' data-accordion><li class='accordion-navigation'><a href=#idea"+idea.id+">"+idea.title+"<div class='right'><i class='fa fa-thumbs-o-up'></i><i class='fa fa-thumbs-o-down'></i><span class='round radius label'>"+idea.quality+"</span></div></a><div id=idea"+idea.id+" class='content'>"+idea.body+"<br><span data-id="+idea.id+" class='alert round radius label delete-label'>Delete</span><span data-reveal-id="+idea.title+" class='round radius label edit-label'>Edit</span></div></li></ul>"
-}
-
-function editLabelModal(idea){
-  return "<div id="+idea.title+" class='reveal-modal' data-reveal aria-labelledby='modalTitle' aria-hidden='true' role='dialog'><h2 id='modalTitle'>Edit Idea</h2><p class='lead'>Your couch.  It is mine.</p><p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p><a class='close-reveal-modal' aria-label='Close'>&#215;</a><%= 'heyo' %></div>"
+  return "<li class='accordion-navigation' data-id="+ idea.id +"><a href=#idea"+idea.id+">"+idea.title+"<div class='right'><i class='fa fa-thumbs-o-up'></i><i class='fa fa-thumbs-o-down'></i><span class='round radius label'>"+idea.quality+"</span></div></a><div id=idea"+idea.id+" class='content'>"+idea.body+"<div class='edit-delete-labels'><span data-id="+idea.id+" class='alert round radius label delete-label'>Delete</span><span data-reveal-id='myModal' class='round radius label edit-label'>Edit</span></div></div></li>"
 }
 
 function trimIdeaBody(idea){
@@ -31,16 +27,26 @@ function addDeleteHandler(idea){
 
 function addEditHandler(label){
   label.on('click', function(){
-    console.log("Anything?")
-    var modalTitle = $(this).attr('data-reveal-id')
-    $('#' + modalTitle).foundation('reveal', 'open');
+    var ideaID = $(this).parents('.accordion-navigation').attr('data-id')
+    $('#myModal').foundation('reveal', 'open')
 
+    $('#edit-idea').submit(function() {
+      var valuesToSubmit = $(this).serialize()
+
+      $.ajax({
+          type: "PUT",
+          url: "api/v1/ideas/" + ideaID,
+          data: valuesToSubmit,
+          dataType: "JSON"
+      }).success(function(){
+        window.location.reload()
+      })
+      return false
+    })
   })
 }
 
-
-$(document).ready(function(){
-
+function requestAllIdeas(){
   $.ajax({
       type: "GET",
       url: "api/v1/ideas",
@@ -48,38 +54,43 @@ $(document).ready(function(){
   }).success(function(ideas){
     ideas.forEach(function(idea){
       trimIdeaBody(idea)
-      var ideaDomElement  = $(ideaAccordionElement(idea));
-      var modalDomElement = $(editLabelModal(idea))
+      var ideaDomElement  = $(ideaAccordionElement(idea))
 
-      addDeleteHandler(ideaDomElement.find('.delete-label'));
-      addEditHandler(ideaDomElement.find('.edit-label'));
+      addDeleteHandler(ideaDomElement.find('.delete-label'))
+      addEditHandler(ideaDomElement.find('.edit-label'))
 
       $('.ideas-list').append(ideaDomElement)
-      $('body').append(modalDomElement)
+      $(document).foundation('accordion', 'reflow')
     })
-    $(document).foundation('accordion', 'reflow')
   })
+}
 
-
-
-  $('form').submit(function() {
+function createNewIdea(){
+  $('#create-idea').submit(function() {
     var valuesToSubmit = $(this).serialize()
     this.reset()
+
     $.ajax({
         type: "POST",
         url: $(this).attr('action'), //sumbits it to the given url of the form
         data: valuesToSubmit,
         dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
     }).success(function(idea){
-      console.log("success", idea)
+      console.log("successful creation", idea)
       trimIdeaBody(idea)
-      var ideaDomElement = $(ideaAccordionElement(idea));
-      addDeleteHandler(ideaDomElement.find('.delete-label'));
-      addEditHandler(ideaDomElement.find('.edit-label'));
+      var ideaDomElement = $(ideaAccordionElement(idea))
+
+      addDeleteHandler(ideaDomElement.find('.delete-label'))
+      addEditHandler(ideaDomElement.find('.edit-label'))
+
       $('.ideas-list').prepend(ideaDomElement)
       $(document).foundation('accordion', 'reflow')
     })
-    return false // prevents normal behaviour
+    return false // prevents normal form behaviour
   })
+}
 
+$(document).ready(function(){
+  requestAllIdeas()
+  createNewIdea()
 })

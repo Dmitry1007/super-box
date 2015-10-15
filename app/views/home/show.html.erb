@@ -2,29 +2,30 @@
 
 <div class="row">
   <div class="medium-3 columns">
-    <form action="/api/v1/ideas" accept-charset="UTF-8" method="post">
-      <div class="row">
-        <div class="medium-3 columns">
-          <label>
-            <input class="" type="text" name="idea[title]" id="idea_title" placeholder="Title">
-          </label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="medium-3 columns">
-          <label>
-            <textarea class="" type="text" name="idea[body]" id="idea_body" placeholder="Body"></textarea>
-          </label>
-        </div>
-      </div>
-      <input type="submit" name="commit" value="Save" id="create-idea" class="tiny radius success button">
+    <form id="create-idea" action="/api/v1/ideas" accept-charset="UTF-8" method="post">
+      <input type="text" name="idea[title]" placeholder="Title">
+      <textarea type="text" name="idea[body]" placeholder="Body"></textarea>
+      <input type="submit" name="commit" value="Save" id="save-idea" class="tiny radius success button">
     </form>
   </div>
 </div>
 
 <div class="row">
   <h4>Ideas</h4>
-  <div class="medium-9 columns ideas-list">
+  <div class="medium-9 columns">
+    <ul class='accordion ideas-list' data-accordion>
 
+    </ul>
   </div>
+</div>
+
+<div id="myModal" class='reveal-modal' data-reveal aria-labelledby='modalTitle' aria-hidden='true' role='dialog'>
+  <h2 id='modalTitle'>Edit Idea</h2>
+    <form id="edit-idea" accept-charset='UTF-8' method='post'>
+      <input type='hidden' name='_method' value='put' />
+        <input type='text' name='idea[title]' id='edit-idea-title'>
+        <textarea type='text' name='idea[body]' id='edit-idea-body'></textarea>
+        <input type='submit' name='commit' value='Update Idea' id='update-idea' class='tiny radius success button'>
+    </form>
+    <a class='close-reveal-modal' aria-label='Close'>&#215;</a>
 </div>
