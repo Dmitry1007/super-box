@@ -67,6 +67,14 @@ function requestAllIdeas(){
 
 function createIdea(){
   $('#create-idea').submit(function() {
+
+    inputField = document.getElementById("create-idea-input").value;
+    textArea   = document.getElementById("create-idea-textarea").value;
+    if (inputField === "" || textArea === "") {
+      alert("Input Field(s) Cannot Be Blank");
+      return false;
+    };
+
     var valuesToSubmit = $(this).serialize()
     this.reset()
 
